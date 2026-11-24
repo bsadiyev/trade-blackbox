@@ -12,9 +12,22 @@ It never places, modifies or cancels orders. It reads, records and alerts.
 |---|---|---|
 | `quantower/TradeLogger.cs` | Quantower (C#) | Working prototype, used on live futures sessions |
 | `quantower/BehaviorAlerter.cs` | Quantower (C#) | Working prototype, used on live futures sessions |
-| Python service | MyFundedPerps API + WebSocket streams | Planned, see [Roadmap](#roadmap) |
+| `python/` | MyFundedPerps API + WebSocket streams | In progress: v0.1 recorder, see [docs/roadmap.md](docs/roadmap.md) |
 
 The Quantower modules are where the ideas were tested. The next step is a platform-independent Python version built on an exchange or prop-firm API.
+
+## Documentation
+
+| Document | What's inside |
+|---|---|
+| [docs/roadmap.md](docs/roadmap.md) | Stages and current status |
+| [docs/architecture.md](docs/architecture.md) | Components and data flow |
+| [docs/decisions.md](docs/decisions.md) | Decision log with reasons and alternatives |
+| [docs/api-notes.md](docs/api-notes.md) | MyFundedPerps API facts: documented vs verified, open questions |
+| [docs/data-schema.md](docs/data-schema.md) | Raw log format, trades and fills columns |
+| [docs/testing.md](docs/testing.md) | Sandbox test scenario and fixtures policy |
+| [docs/runbook.md](docs/runbook.md) | Setup and running on Windows |
+| [CHANGELOG.md](CHANGELOG.md) | What changed, by date and version |
 
 ## TradeLogger
 
@@ -56,6 +69,22 @@ Design choices worth noting:
 
 Output: `behavior_YYYYMMDD.jsonl` (one JSON event per line), `state_YYYYMMDD.txt` (survives restarts), generated `.wav` files you can replace with your own.
 
+## Running the Python version
+
+Setup on Windows, step by step: [docs/runbook.md](docs/runbook.md). In short:
+
+```powershell
+git clone https://github.com/bsadiyev/trade-blackbox.git
+cd trade-blackbox
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -e .\python
+Copy-Item .env.example .env   # put your read-only API key into .env
+python -m blackbox check
+```
+
+Requires Python 3.12+. The key stays in `.env` on your machine; `.env` is ignored by git.
+
 ## Building the Quantower modules
 
 1. Visual Studio 2022 or later, new **Class Library** project.
@@ -68,13 +97,13 @@ Code comments and on-screen messages are in Russian. Parameter names and the CSV
 
 ## Privacy
 
-The logs contain your account name in the `account` column and in the platform log. Do not commit them: the included `.gitignore` excludes `*.csv`, `*.jsonl` and state files. Strip account identifiers before sharing screenshots.
+The logs contain your account name or id: the Quantower `account` column and platform log, and every Python output file. Do not commit them: the included `.gitignore` excludes `*.csv`, `*.jsonl`, state files and `.env`. Strip account identifiers before sharing screenshots.
 
 ## Roadmap
 
-Python service for [MyFundedPerps](https://myfundedperpetuals.com) using the public REST API and WebSocket streams:
+Python service for [MyFundedPerps](https://myfundedperpetuals.com) using the public REST API and WebSocket streams. Detailed stages and status: [docs/roadmap.md](docs/roadmap.md).
 
-1. **Ingest.** Account stream (fills, orders, positions, risk snapshot) plus market data for markets with an open position, written to an append-only raw event log. Sequence numbers, resume and REST backfill cover disconnects.
+1. **Ingest.** Account stream (fills, orders, positions) plus market data for markets with an open position, written to an append-only raw event log. Sequence numbers, resume and REST backfill cover disconnects. Account risk and rules come from REST.
 2. **Recorder.** Trades and fills tables are recomputed from the raw log, so every metric can be rebuilt and tested by replay. MAE / MFE measured on book mid, in USD and R.
 3. **Behavior guard.** The same rules as BehaviorAlerter, with thresholds derived from the account's own risk rules instead of hard-coded numbers. Alerts to Telegram.
 4. **Hosted bot.** Connect with a read-only API key, no local install.
