@@ -6,6 +6,12 @@ Every entry carries the date the change was made.
 
 ## [Unreleased]
 
+### 2026-11-24 — Repository presentation
+- README: CI status badge.
+- README: settings screenshots of both Quantower modules (`docs/images/`). The BehaviorAlerter screenshot
+  was captured on build 14 and is labeled as such.
+- README: disclaimer states the project is independent and not affiliated with MyFundedPerps or Quantower.
+
 ### 2026-11-24 — Project foundation
 - Added `CLAUDE.md` with working rules: plan before action, one stage per PR, definition of done,
   dating rules, safety rules (read-only, key handling, anonymized fixtures).
