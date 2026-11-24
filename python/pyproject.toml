@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trade-blackbox"
+version = "0.1.0.dev0"
+description = "Read-only trade recorder and behavior alerts for discretionary traders"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+    "websockets>=13",
+    "httpx>=0.27",
+    "python-dotenv>=1.0",
+    "tzdata>=2024.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+]
+
+[project.scripts]
+blackbox = "blackbox.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
