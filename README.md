@@ -1,5 +1,7 @@
 # Trade Blackbox
 
+[![CI](https://github.com/bsadiyev/trade-blackbox/actions/workflows/ci.yml/badge.svg)](https://github.com/bsadiyev/trade-blackbox/actions/workflows/ci.yml)
+
 A flight recorder and behavior guard for discretionary traders.
 
 Broker journals tell you *what* you traded. They rarely tell you how much heat a trade took before it worked, whether the stop was actually there after you added size, or that you re-entered 20 seconds after a loss for the third time today. Trade Blackbox records that layer and speaks up while it is happening.
@@ -46,6 +48,10 @@ Output files (weekly rotation by default): `trades_YYYY-Www.csv`, `fills_YYYY-Ww
 
 All file and order-collection work runs off the trading threads (background CSV writer, 1-second bracket scan), so the logger does not cause terminal lag at the moment a position closes.
 
+![TradeLogger settings window in Quantower](docs/images/tradelogger-settings.png)
+
+*Settings window in Quantower, v19 defaults.*
+
 ## BehaviorAlerter
 
 Sound and text alerts for execution patterns that usually come before a bad day.
@@ -68,6 +74,10 @@ Design choices worth noting:
 - Everything that can block (disk, sound, platform log, platform alerts) runs on one background queue.
 
 Output: `behavior_YYYYMMDD.jsonl` (one JSON event per line), `state_YYYYMMDD.txt` (survives restarts), generated `.wav` files you can replace with your own.
+
+![BehaviorAlerter settings window in Quantower](docs/images/behavioralerter-settings.png)
+
+*Settings window in Quantower, captured on build 14. Build 15 drops the local time offset parameter: local time now follows the Windows time zone.*
 
 ## Running the Python version
 
@@ -111,6 +121,8 @@ Python service for [MyFundedPerps](https://myfundedperpetuals.com) using the pub
 Read-only keys only. The service never needs trading permissions.
 
 ## Disclaimer
+
+Independent open-source project. Not affiliated with, endorsed by or supported by MyFundedPerps or Quantower.
 
 This is a personal tool shared as-is. It is not financial advice and gives no guarantee that the numbers are correct for your platform or broker. Always check against your broker's statements.
 
